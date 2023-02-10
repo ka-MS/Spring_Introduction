@@ -21,6 +21,7 @@ public class MemberController {
     @Autowired // 생성자에서 쓰면 멤버컨드롤러가 생성될때 스프링빈에 등록되어있는 멤버서비스 객체를 넣어줌 의존성 주입
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
+        System.out.println("memberService = " + memberService.getClass());
     }
 
     @GetMapping("/members/new")

@@ -1,40 +1,32 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemoryMemberRepository;
-import org.junit.jupiter.api.AfterEach;
+import hello.hellospring.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-class MemberServiceTest {
-
+@SpringBootTest
+@Transactional
+class MemberServiceIntegrationTest {
+    // 테스트케이스에서는 필드인젝션을 해도 괜찮음
+    // 가장 마지막 작업이고 다른곳에서 테스트코드를 가져다 쓸것이 아니기때문
+    // 테스트는 반복할 수 있어야한다. -> db에 저장되어버리면 반복케이스가 안될것임
+    // @Transactional을 테스트케이스에 사용하면 넣었던 데이터가 반영이 되지않고 롤백하여 반영시키지 않음
+    @Autowired
     MemberService memberService;
-    MemoryMemberRepository memberRepository;
-    // MemberService memberService = new MemberService();
-    // MemoryMemberRepository memberRepository = new MemoryMemberRepository();
-    // 이렇게 하면 서비스의 레포지토리 객체와 다른 또다른 객체를 생성한 것이 된다 변수가 static이 아니라면 문제가 생길것
-    // 이럴때 필요한것이 의존성 주입 서비스의 메모리 객체에 생성자를 만들어 주고 의존성을 주입한다.
-    @BeforeEach // 테스트 시작전에 레포지토리 객체를 직접 생성해주고 의존성 주입해줌
-    public void beforeEach() {
-        memberRepository = new MemoryMemberRepository();
-        memberService = new MemberService(memberRepository);
-    }
-
-    @AfterEach // 항상 테스트 실행 후 레포지토리 클리어로 비워줌
-    public void afterEach() {
-        memberRepository.clearStore();
-    }
-
+    @Autowired
+    MemberRepository memberRepository;
 
     @Test
     void 회원가입() {
         //given 무언가 주어졌을때
         Member member = new Member();
-        member.setName("spring");
+        member.setName("spring4");
 
         //when 이걸 실행했을때
         Long saveId = memberService.join(member);
